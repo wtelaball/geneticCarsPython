@@ -23,7 +23,12 @@ I included the LICENSE file from the original as conceptually this works is base
 
 ## howto
 
-Just execute **python main.py** no params so far.
+Just execute **python main.py [num_generations] [individuals_per_generation]**
+
+Params:
+
+num_generations 				how many evolutions there will be
+individuals_per_generation		how many genotypes will be created in each evolution
 
 ## simulation
 
@@ -55,7 +60,7 @@ You will normally expect training this neuralnetwork with good data about how to
 
 Load the track from a png. You can test your own.
 
-Use green square to point the start location and red squares for the waypoints.
+Use red square to point the start location and green squares for the waypoints.
 
 Waypoints must be sorted y-decrementally to solve which one is the next. You know, put one in any x-location but the y-location must be less than the past one.
 

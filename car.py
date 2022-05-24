@@ -12,6 +12,10 @@ import time
 
 class Car:
 
+	'''
+	car object, holds the location and neural network controller
+	'''
+
 	CAR_THICKNESS = 2
 	SENSOR_DISTANCE = 300
 	CARWIDTH = 10
@@ -49,11 +53,13 @@ class Car:
 		self.turn_ratio = 0
 		self.speed = 0
 		self.throttle = 0
-		self.car_color = color
-		self.car_thickness = self.CAR_THICKNESS
 		self.odometer = 0
 		self.movingTimeout = time.time() + self.STUCK_TIMEOUT
 		self.alive = True
+
+		self.car_color = color
+		self.car_thickness = self.CAR_THICKNESS
+
 
 		# define car corners around (0,0)
 		self.x1 = -width / 2
@@ -81,15 +87,14 @@ class Car:
 		self.nn.addLayer(4, 3)
 		self.nn.addLayer(3, 2)
 		self.nn.randomWeights()
-		#self.nn.show()
 
 		self.output = np.zeros([2])
 
 		# waypoints
-		self.trackCompletion = 0
-		self.currentWayPointCompletion = 0
-		self.waypointIndex = 0
-		self.bestTrackCompletion = 0
+		self.trackCompletion = 0 			# % of track completed from the beginning to the last crossed waypoint
+		self.currentWayPointCompletion = 0 	# % completed of the current waypoint (% depends on num of waypoints)
+		self.waypointIndex = 0 				# index of next waypoint
+		self.bestTrackCompletion = 0 		# to measure distance between two checks, to check if stuck
 
 
 		self.lastUpdateTime = 0

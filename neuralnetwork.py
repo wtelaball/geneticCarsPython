@@ -5,13 +5,15 @@ import cv2 as cv
 import tools
 
 class NeuralLayer:
-
+	'''
+	object containing a neural layer
+	'''
 
 	def __init__(self, nodeCount, outputCount):
 		self.nodeCount = nodeCount
 		self.outputCount = outputCount
 		# 2 outputs 3 nodes
-		# w11 w12 w13 w14		o = w11 * i1 + w12 * i2 + w13 * i3 + b1, begin b1 = w14
+		# w11 w12 w13 w14		o = w11 * i1 + w12 * i2 + w13 * i3 + b1, being b1 = w14
 		# w21 w22 w23 w24
 		self.weights = np.zeros([outputCount, nodeCount + 1])
 
@@ -22,7 +24,7 @@ class NeuralLayer:
 
 		# weights have weights plus biases
 		if len(weights) != dimension:
-			print("weights not enough")
+			print("weights not enough for this layer")
 			sys.exit(-1)
 
 		k = 0
@@ -51,10 +53,16 @@ class NeuralLayer:
 		return tools.sigmoid(x)
 
 	def processInputs(self, inputs):
+		'''
+		calc the output of the layer for a given input
+		'''
 
 		if len(inputs) != self.nodeCount:
 			print("inputs does not match node count")
 			sys.exit(-1)
+
+
+		# o = w11 * i1 + w12 * i2 + w13 * i3 + w14, w14 is the bias
 
 		sum = np.zeros([self.outputCount])
 
@@ -71,6 +79,9 @@ class NeuralLayer:
 		return sum
 
 	def randomWeights(self, min, max):
+		'''
+		set random weights to the layer
+		'''
 		
 		rango = abs(min - max)
 
@@ -86,15 +97,27 @@ class NeuralLayer:
 
 class NeuralNetwork:
 
+	'''
+	object containing the neural layers
+	'''
+
 	def __init__(self):
 		self.layers = []
 
-	def addLayer(self, nc, oc):
-		layer = NeuralLayer(nc, oc)
+	def addLayer(self, neuronCount, outputCount):
+		'''
+		add a layer to the neural network
+		'''
+
+		layer = NeuralLayer(neuronCount, outputCount)
 		self.layers.append(layer)
 
-
 	def processInputs(self, inputs):
+
+		'''
+		calc the output of the neural network based on the inputs given
+		'''
+
 		if len(inputs) != self.layers[0].nodeCount:
 			print("inputs does not match node count on first layer")
 			sys.exit(-1)
@@ -118,6 +141,9 @@ class NeuralNetwork:
 		return outputs
 
 	def randomWeights(self, min = -1.0, max = 1.0):
+		'''
+		apply random weights to all layers
+		'''
 		for layer in self.layers:
 			layer.randomWeights(min, max)
 
@@ -130,6 +156,10 @@ class NeuralNetwork:
 			k += 1
 
 	def getWeights(self):
+		'''
+		create a weight list with the weights coming from layer to layer
+		'''
+
 		weights = []
 
 		for layer in self.layers:
@@ -143,6 +173,10 @@ class NeuralNetwork:
 		return weights
 
 	def setWeights(self, weights):
+		'''
+		apply weights in a layer to layer basis
+		get chunks of weights and apply to the corresponding layer
+		'''
 
 		k = 0
 
@@ -172,6 +206,10 @@ class NeuralNetwork:
 	WEIGHT_THICKNESS = 10
 
 	def graph(self, img, ystart = 0):
+
+		'''
+		shows a visual representation of the neural network on given img
+		'''
 
 		# draw the dots
 

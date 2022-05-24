@@ -8,6 +8,10 @@ import time
 
 class Waypoint:
 
+	'''
+	The Waypoint object is just a point object for handling (x,y) coordinates 
+	'''
+
 	RADIUS = 25
 
 	def __init__(self, x = 0, y = 0):
@@ -29,6 +33,9 @@ class Waypoint:
 
 class TrackManager:
 
+	'''
+	TrackManager holds the track image and list of waypoints and the start point
+	'''
 
 	FONT_SCALE = 0.5
 	FONT_COLOR = (0, 0, 0)
@@ -60,6 +67,7 @@ class TrackManager:
 
 
 	def sortWaypoints(self):
+
 		# sort each time one wp is added
 		# let the first one be the highest 'y' and sort them y-decrementally
 
@@ -79,19 +87,30 @@ class TrackManager:
 
 
 	def distanceBetweenWaypoints(self, wpindex0, wpindex1):
+		'''
+		calc distance between two consecutive waypoints
+		'''
 
 		# special case when is the first one
 		if (wpindex0 == 0) and (wpindex1 == 0):
 			x0, y0 = self.startPosition.getPos()
 			x1, y1 = self.waypoints[0].getPos()
 		else:
-			x0, y0 = self.waypoints[wpindex0].getPos()
-			x1, y1 = self.waypoints[wpindex1].getPos()
+			if abs(wpindex1 - wpindex0) == 1:
+				x0, y0 = self.waypoints[wpindex0].getPos()
+				x1, y1 = self.waypoints[wpindex1].getPos()
+			else:
+				print("cannot calc distance between two non-consecutive waypoints")
+				sys.exit(-1)
 
 		return tools.distance(x0, y0, x1, y1)
 
 
 	def getWayPointCompletion(self, car):
+
+		'''
+		calc % of completion for the current waypoint of the car
+		'''
 
 		# if no waypoints then track is finished
 		if self.numWaypoints() == 0: return 1
@@ -113,9 +132,8 @@ class TrackManager:
 
 		currDistToWp = tools.distance(carx, cary, wpx, wpy)
 
-		#print currDistToWp
+		# close enough to capture next waypoint?
 
-		# close enough?
 		if (currDistToWp < Waypoint.RADIUS):
 			wpCompletion = 1
 		else:
@@ -133,10 +151,14 @@ class TrackManager:
 
 	def updateDistanceToNextWaypoint(self, car):
 
+		'''
+		update car stats based on % of completion of current waypoint
+		'''
+
 		completion = self.getWayPointCompletion(car)
 
 		if (completion == 1):
-			# waypoint completed
+			# waypoint completed, set the next waypoint
 			car.waypointIndex += 1
 
 			# is track finished?
@@ -179,6 +201,9 @@ class TrackManager:
 		self.detectTrack(rf, gf)
 
 	def detectTrack(self, redfilter, greenfilter):
+		'''
+		get the track image from the original source
+		'''
 		blackFilter = copy.copy(self.originalImage)[:,:,:3]
 		blackFilter = cv.cvtColor(blackFilter, cv.COLOR_BGR2HSV)
 		mask = cv.inRange(blackFilter, (0, 0, 0), (255, 55, 150))
@@ -187,14 +212,14 @@ class TrackManager:
 		white = np.full((color.shape[0], color.shape[1], 3), (255, 255, 255), dtype = np.uint8)
 		blackFilter = cv.bitwise_and(white, white, mask = mask)
 
-
-		cv.imshow('carSim', mask)
-		cv.waitKey(0)
-
 		self.trackImage = blackFilter
 
 
 	def detectStart(self):
+		'''
+		get the start location from the original source
+		searching for red squares
+		'''
 		redFilter = copy.copy(self.originalImage)
 		redFilter = cv.cvtColor(redFilter[:,:,:3], cv.COLOR_BGR2HSV)
 		maskRed1 = cv.inRange(redFilter, (0, 70, 50), (10, 255, 255))
@@ -210,7 +235,7 @@ class TrackManager:
 		contorno = contorno[0]
 
 		if (len(contorno) != 1):
-			print("no start detected")
+			print("no start location detected")
 			sys.exit(-1)
 
 		for c in contorno:
@@ -222,6 +247,11 @@ class TrackManager:
 		return redFilter
 
 	def detectWaypoints(self):
+		'''
+		get the waypoints from the original source
+		searching for green squares
+		'''
+
 		hsv = copy.copy(self.originalImage)
 		hsv = cv.cvtColor(hsv[:,:,:3], cv.COLOR_BGR2HSV)
 
@@ -251,6 +281,8 @@ class TrackManager:
 			print("wp=%d (%d,%d)" %(k, i.x, i.y))
 			k += 1
 
+	def getWaypoints(self):
+		return self.waypoints
 
 	def getImage(self):
 		return self.trackImage
@@ -260,6 +292,10 @@ class TrackManager:
 		return self.trackImage.shape[1], self.trackImage.shape[0]
 
 	def printData(self, img, car, x, y):
+		'''
+		prints stats for a given car
+		'''
+
 		posy = y
 
 		text = "POS=(%d, %d)" %(car.cx, car.cy) + " WPI=%d WPC=%d%% TC=%d%% C=%.1f%% M=%d" %(car.waypointIndex, 100 * car.currentWayPointCompletion, 100 * car.trackCompletion, 100.0 * car.completion(), car.getTimer())
@@ -284,9 +320,31 @@ class TrackManager:
 		posy += self.fontSize
 
 
+	def showTrack(self):
+		'''
+		create image with track detected data
+		'''
+
+
+		image = copy.copy(self.getImage())
+
+		cv.putText(image, "S", self.getStart(), self.font, self.FONT_SCALE, self.FONT_COLOR, 1, self.fontAA)
+
+		k = 0
+
+		for w in self.waypoints:
+			cv.putText(image, "W%d" %(k), w.getPos(), self.font, self.FONT_SCALE, self.FONT_COLOR, 1, self.fontAA)
+			k += 1
+
+		return image
+
+
 	def bestCar(self, cars):
 
-		# return the best two cars based on track completion
+		'''
+		returns the best two cars based on track completion
+		also change the color of these two
+		'''
 
 		best = None
 		secondBest = None
@@ -330,7 +388,9 @@ class TrackManager:
 
 	def allDone(self, cars):
 
-		# return True if all cars died, False if any still alive
+		'''
+		returns True if all cars died, False if any still alive
+		'''
 
 		for car in cars:
 			if car.isAlive(): 

@@ -120,10 +120,6 @@ def createCars(numgenotypes = 10, oldgenotypes = None, agent1 = None, agent2 = N
 		print("new generation must contain at least 2")
 		sys.exit(-1)
 
-	if ((numgenotypes % 2) == 1):
-		print("genotypes created must be 2-fold")
-		sys.exit(-1)
-
 	if (agent1 is None) and (agent2 is None) and (oldgenotypes is None):
 		
 		# create cars random
