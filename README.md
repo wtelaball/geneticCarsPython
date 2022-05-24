@@ -21,6 +21,9 @@ https://github.com/ArztSamuel/Applying_EANNs
 After all the reading I decided to go on myself based on the project by Samuel Arzt but using Python and OpenCV instead.
 I included the LICENSE file from the original as conceptually this works is based on his, my way to give credit.
 
+## howto
+
+Just execute **python main.py** no params so far.
 
 ## simulation
 
