@@ -43,14 +43,15 @@ Data coming from this sensor will be used as an input for the neural network to 
 
 3 layers: x5 inputs - x4 outputs, x4 inputs - x3 outputs, x3 inputs - x2 outputs.
 
-Randomly assigned weights and bias at the start. With x5 inputs (distance sensors) and x2 outputs (turn ration and throttle), the neural network should learn how to drive on its own.
+Randomly assigned weights and bias at the start. With x5 inputs (distance sensors) and x2 outputs (turn ratio and throttle), the neural network should learn how to drive on its own.
 
-You will normally expect training this neuralnetwork with good data about how to drive. However, the approach here is test a new bunch of cars and pick the best. Use the best as a seed for the new generation of cars.
+You will normally expect training this neuralnetwork with good data about how to drive. However, the approach here is test a new bunch of cars and pick the best. Use the best as a seed for the new generation of cars and let the evolution do the hard work.
 
 
 ## track
 
 Load the track from a png. You can test your own.
+
 Use green square to point the start location and red squares for the waypoints.
 
 Waypoints must be sorted y-decrementally to solve which one is the next. You know, put one in any x-location but the y-location must be less than the past one.
@@ -63,6 +64,7 @@ Just the first window is the one needed, the other two are just for fun.
 Car progress data is shown on the first window. The best and second-best at the top, the rest are not sorted in any way.
 
 Use 'Q' key to stop and exit the simulation.
+
 Use 'P' key to pause and resume simulation.
 
 
