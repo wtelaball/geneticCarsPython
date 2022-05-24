@@ -20,7 +20,7 @@ class Waypoint:
 		self.visible = False
 
 	def getPos(self):
-		return self.x, self.y
+		return int(self.x), int(self.y)
 
 	def setPos(self, x, y):
 		self.x = x
