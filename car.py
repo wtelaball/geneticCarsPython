@@ -113,8 +113,11 @@ class Car:
 		#self.lastUpdateTime = self.lastUpdateTime + (time.time() - self.pausedWhen)
 		self.movingTimeout = self.movingTimeout + (time.time() - self.pausedWhen)
 
-
 	def update(self):
+
+		'''
+		updates next position based on controller inputs
+		'''
 
 		# time from last update
 
@@ -184,9 +187,11 @@ class Car:
 
 	def checkForStuck(self):
 
-		# check if track completion has increased 
-		# if yes top life
-		# if not then reduce life
+		'''
+		check if track completion has increased 
+		if yes top life
+		if not then reduce life
+		'''
 
 		if self.alive and not self.paused:
 
@@ -222,6 +227,11 @@ class Car:
 		self.car_thickness = self.CAR_THICKNESS * 2
 
 	def draw_sensor_line(self, imgTrack, imgRes, angle):
+		'''
+		draw an imaginary straight line from the sensor start location to a point given by SENSOR_DISTANCE
+		if any oclusion found the stop and return collision point and modular distance [0, 1]
+		'''
+
 		# start point
 		sx, sy = tools.rotate(self.sensorx, self.sensory, self.steer)
 		sx += self.cx
@@ -253,7 +263,10 @@ class Car:
 
 	def detect_collision(self, imgTrack, x1, y1, x2, y2):
 	
-		# just a simple line tracing from (x1,y1) to (x2,y2)
+		'''
+		just a simple line tracing from (x1,y1) to (x2,y2)
+		returns when the next point in line is ocuppied yet
+		'''
 
 		dx = abs(x2 - x1)
 		if (x1 < x2): 
@@ -322,6 +335,10 @@ class Car:
 
 	def draw_sensor_lines(self, imgTrack, imgResult):
 
+		'''
+		paint sensor lines and update sensor measurements
+		'''
+
 
 		if self.alive:
 
@@ -338,7 +355,10 @@ class Car:
 
 	def draw(self, img):
 
-		# draw car contour
+		'''
+		draw car contour
+		'''
+
 		p1x, p1y = tools.rotate(self.x1, self.y1, self.steer)
 		p2x, p2y = tools.rotate(self.x2, self.y2, self.steer)
 		p3x, p3y = tools.rotate(self.x3, self.y3, self.steer)
@@ -372,7 +392,9 @@ class Car:
 	
 	def autopilot(self):
 
-		# calc outputs based on sensor readings
+		'''
+		calc outputs based on sensor readings
+		'''
 
 		if self.alive:
 			self.output = self.nn.processInputs(self.sensors)
@@ -380,7 +402,11 @@ class Car:
 			self.output[1] = (self.output[1] - 0.5)
 
 	def apply(self):
-		# apply outputs from NN to throttle and turn
+
+		'''
+		apply outputs from NN to throttle and turn
+		'''
+
 		self.throttle = self.output[0]
 		self.turn_ratio = self.output[1]
 
@@ -423,7 +449,14 @@ class Car:
 			return 0
 
 	def getGenotype(self):
+		'''
+		get features of this individual
+		'''
+
 		return self.nn.getWeights()
 
 	def setGenotype(self, w):
+		'''
+		set features of this individual
+		'''
 		self.nn.setWeights(w)
