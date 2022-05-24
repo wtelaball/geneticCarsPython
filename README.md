@@ -28,6 +28,7 @@ Just execute **python main.py [num_generations] [individuals_per_generation]**
 Params:
 
 num_generations 				how many evolutions there will be
+
 individuals_per_generation		how many genotypes will be created in each evolution
 
 ## simulation

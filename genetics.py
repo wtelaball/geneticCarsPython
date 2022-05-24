@@ -3,16 +3,27 @@ import car
 import math
 import sys
 
+'''
+evolution of species
+
+two parents create a new entire population
+get the pair and swap some genes from these two and create a new pair with some mutations
+'''
+
 def mutateGenotype(genes, mutationGenotypeProbability = 1.0):
 
-	# do we need to mutate this genotype?
+	'''
+	do we need to mutate this genotype?
+	'''
 
 	if (np.random.random() < mutationGenotypeProbability):
 		mutateGenes(genes)
 
 def mutateGenes(genes,  mutationGeneProbability = 0.3, mutationGeneAmount = 2.0):
 
-	# apply some randomness to each gene from the genotype
+	'''
+	apply some randomness to each gene from the genotype
+	'''
 
 	for i in range(len(genes)):
 		if (np.random.random() < mutationGeneProbability):
@@ -22,7 +33,9 @@ def mutateGenes(genes,  mutationGeneProbability = 0.3, mutationGeneAmount = 2.0)
 
 def crossOver(genes1, genes2, crossOverProbability = 0.6):
 
-	# swap i-gene from both genotypes
+	'''
+	swap i-gene from both genotypes
+	'''
 
 	if len(genes1) != len(genes2):
 		print("genes dimension must match")
@@ -37,6 +50,10 @@ def crossOver(genes1, genes2, crossOverProbability = 0.6):
 
 
 def crossOverAndMutation(agent1, agent2, numchildren):
+
+	''' 
+	create a new population based on agents 1 and 2
+	'''
 
 	children = []
 
