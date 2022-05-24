@@ -3,10 +3,6 @@
 Just a simple mix of cars, neuralnetworks and genetics.
 Do not take this work so seriously, it's just a test bench for my personal ideas.
 
-Requirements:
-python, opencv, numpy
-
-
 Based on:
 
 First Read
@@ -20,6 +16,21 @@ https://github.com/ArztSamuel/Applying_EANNs
 
 After all the reading I decided to go on myself based on the project by Samuel Arzt but using Python and OpenCV instead.
 I included the LICENSE file from the original as conceptually this works is based on his, my way to give credit.
+
+## Requirements
+
+This project needs the next requirements:
+python, opencv, numpy
+
+Installation on Debian based system:
+
+```bash
+sudo apt update
+sudo apt install python3
+sudo apt install python3-pip
+
+python3 -m pip install -r requirements.txt
+```
 
 ## howto
 
