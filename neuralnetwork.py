@@ -10,6 +10,15 @@ class NeuralLayer:
 	'''
 
 	def __init__(self, nodeCount, outputCount):
+
+		if (nodeCount < 1):
+			print("one node at least for the layer")
+			sys.exit(-1)
+
+		if (outputCount < 1):
+			print("one output at least for the layer")
+			sys.exit(-1)
+
 		self.nodeCount = nodeCount
 		self.outputCount = outputCount
 		# 2 outputs 3 nodes
@@ -117,6 +126,9 @@ class NeuralNetwork:
 		'''
 		calc the output of the neural network based on the inputs given
 		'''
+		if len(self.layers) == 0:
+			print("add at least one layer to the nn")
+			sys.exit(-1)
 
 		if len(inputs) != self.layers[0].nodeCount:
 			print("inputs does not match node count on first layer")
@@ -210,6 +222,11 @@ class NeuralNetwork:
 		'''
 		shows a visual representation of the neural network on given img
 		'''
+
+		if len(self.layers) == 0:
+			print("add at least one layer to the nn")
+			sys.exit(-1)
+			
 
 		# draw the dots
 

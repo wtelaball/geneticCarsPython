@@ -17,14 +17,14 @@ class Car:
 	'''
 
 	CAR_THICKNESS = 2
-	SENSOR_DISTANCE = 300
-	CARWIDTH = 10
-	CARLENGTH = 20
+	CAR_WIDTH = 10
+	CAR_LENGTH = 20
 
+	SENSOR_DISTANCE = 300
 	SENSOR_RADIUS = 2
 	SENSOR_COLOR = (0, 255, 0)
-	SENSOR_NUM = 5
-	SENSOR_APERTURE = 100
+	SENSOR_NUM = 5 			# num of sensors in the sensor array
+	SENSOR_APERTURE = 100 	# aperture of the sensor array in grades
 
 	CAR_THROTTLE_MAX = 1.0
 	CAR_ENGINE_BRAKE = 2
@@ -35,14 +35,14 @@ class Car:
 	CAR_BEST_COLOR = (255, 255, 0)
 	CAR_SECONDBEST_COLOR = (0, 255, 0)
 
-	CAR_SPEED_MAX = 2 			# max speed
+	CAR_SPEED_MAX = 2 		# max speed
 	STUCK_TIMEOUT = 20		# time to get to the next waypoint
 
-	CAR_COLLISION_DISTANCE = 0.02
+	CAR_COLLISION_DISTANCE = 0.02 # collision detected if any sensor measure if less than
 
 
 
-	def __init__(self, x = 0, y = 0, steer = 0, color = CAR_NORMAL_COLOR, width = CARWIDTH, length = CARLENGTH):
+	def __init__(self, x = 0, y = 0, steer = 0, color = CAR_NORMAL_COLOR, width = CAR_WIDTH, length = CAR_LENGTH):
 
 		self.startx = x
 		self.starty = y
@@ -73,7 +73,7 @@ class Car:
 
 		# init distance sensors
 		self.sensorx = 0
-		self.sensory = length/4
+		self.sensory = length / 4
 		self.sensors = np.zeros([self.SENSOR_NUM])
 
 		for i in range(self.SENSOR_NUM):
@@ -86,6 +86,7 @@ class Car:
 		self.nn.addLayer(self.SENSOR_NUM, 4)
 		self.nn.addLayer(4, 3)
 		self.nn.addLayer(3, 2)
+
 		self.nn.randomWeights()
 
 		self.output = np.zeros([2])
