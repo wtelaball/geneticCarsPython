@@ -10,131 +10,9 @@ import sys
 import tracks
 import tools
 import time
-
-WINDOW_HEIGHT = 600
-WINDOW_WIDTH = 800
+import genetics
 
 
-def mutateGenotype(genes, mutationGenotypeProbability = 1.0):
-
-	if (np.random.random() < mutationGenotypeProbability):
-		mutateGenes(genes)
-
-def mutateGenes(genes,  mutationGeneProbability = 0.3, mutationGeneAmount = 2.0):
-
-	for i in range(len(genes)):
-		if (np.random.random() < mutationGeneProbability):
-			genes[i] += (np.random.random() * mutationGeneAmount * 2) - mutationGeneAmount
-
-
-
-def crossOver(genes1, genes2, crossOverProbability = 0.6):
-
-	if len(genes1) != len(genes2):
-		print("genes dimension must match")
-		sys.exit(-1)
-
-	for i in range(len(genes1)):
-		if (np.random.random() < crossOverProbability):
-			q = genes1[i]
-			genes1[i] = genes2[i]
-			genes2[i] = q
-
-
-
-def crossOverAndMutation(agent1, agent2, numchildren):
-
-	children = []
-
-	while (numchildren > 0):
-
-		w1 = agent1.getGenotype()
-		w2 = agent2.getGenotype()
-
-		crossOver(w1, w2)
-		mutateGenotype(w1)
-		mutateGenotype(w2)
-
-		# create
-
-		children.append(w1)
-		children.append(w2)
-
-		numchildren -= 2
-
-	return children
-
-def randomRecombination(genotypes, genotype1, genotype2, numchildren):
-	
-	children = []
-
-	children.append(genotype1.getGenotype())
-	children.append(genotype2.getGenotype())
-
-	numchildren -= 2
-
-	while (numchildren > 0):
-
-		i1 = np.random.randint(0, len(genotypes))
-		i2 = i1
-
-		while i2 == i1:
-			i2 = np.random.randint(0, len(genotypes))
-
-		w1 = genotypes[i1].getGenotype()
-		w2 = genotypes[i2].getGenotype()
-
-		crossOver(w1, w2)
-		mutateGenotype(w1)
-		mutateGenotype(w2)
-
-		children.append(w1)
-		numchildren -= 1
-
-		if numchildren > 0:
-			children.append(w2)
-
-		numchildren -= 1
-
-
-	return children
-
-
-
-
-def createCars(numgenotypes = 10, oldgenotypes = None, agent1 = None, agent2 = None):
-	
-	genotypes = []
-
-	if (numgenotypes <=2):
-		print("new generation must contain at least 2")
-		sys.exit(-1)
-
-	if ((numgenotypes % 2) == 1):
-		print("genotypes created must be 2-fold")
-		sys.exit(-1)
-
-	if (agent1 is None) and (agent2 is None) and (oldgenotypes is None):
-		
-		# create cars random
-
-		for i in range(numgenotypes):
-			newcar = car.Car(steer = -np.random.random() * math.pi)	
-			genotypes.append(newcar)
-
-	else:
-
-		w = crossOverAndMutation(agent1, agent2, numchildren = numgenotypes)
-
-		#w = randomRecombination(oldgenotypes, agent1, agent2, numgenotypes)
-
-		for i in range(numgenotypes):
-			newcar = car.Car(steer = -np.random.random() * math.pi)	
-			newcar.setGenotype(w[i])
-			genotypes.append(newcar)
-
-
-	return genotypes
 
 def sleep(timer):
 
@@ -195,8 +73,7 @@ def zoom(img, x, y, zoomPercent = 2.0):
 	return imgCrop
 
 
-def main():
-
+def createWindows():
 	cv.namedWindow('carSim')
 	cv.namedWindow('nn')
 	cv.namedWindow('zoom')
@@ -205,12 +82,14 @@ def main():
 	cv.moveWindow('nn', 700, 0)
 	cv.moveWindow('zoom', 700, 600)
 
+
+def main():
+
+	createWindows()
+
 	trackManager = tracks.TrackManager()
 	trackManager.load("tracks/track1_wp.png")
 
-
-	imgNeuron = np.full((500, 500, 3), (255, 255, 255), dtype = np.uint8)
-	cv.imshow('nn', imgNeuron)
 
 	generations = 0
 	done = False
@@ -221,7 +100,9 @@ def main():
 
 	while generations < 100 and not done:
 
-		cars = createCars(10, cars, best, secondBest)
+		cars = genetics.createCars(10, cars, best, secondBest)
+
+		# let the new born learn some basics from the track
 
 		for car in cars:
 			car.setPos(trackManager.getStart())
@@ -234,10 +115,10 @@ def main():
 		trackImg = copy.copy(trackManager.getImage())
 
 
-		while not exit:
+		while not exit and not done:
 			q = cv.waitKey(1) & 0xff
 			key = chr(q).upper()
-			exit = (key == 'Q')
+			exit = (key == '1')
 			done = (key == 'Q')
 
 			if (key == 'E'):
@@ -285,12 +166,12 @@ def main():
 			cv.imshow('zoom', zoomImg)
 
 			if trackManager.allDone(cars):
-				print("finished generation %d" %(generations))
 				exit = True
 
 
-		imgNeuron = showNeuronWeights(best, secondBest)
+		print("finished generation %d" %(generations))
 
+		imgNeuron = showNeuronWeights(best, secondBest)
 		cv.imshow('nn', imgNeuron)
 
 		generations += 1

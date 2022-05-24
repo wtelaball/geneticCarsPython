@@ -3,23 +3,23 @@ import math
 import numpy as np
 
 def is_cv2():
-    # if we are using OpenCV 2, then our cv2.__version__ will start
-    # with '2.'
-    return check_opencv_version("2.")
+	# if we are using OpenCV 2, then our cv2.__version__ will start
+	# with '2.'
+	return check_opencv_version("2.")
 
 def is_cv3():
-    # if we are using OpenCV 3.X, then our cv2.__version__ will start
-    # with '3.'
-    return check_opencv_version("3.")
+	# if we are using OpenCV 3.X, then our cv2.__version__ will start
+	# with '3.'
+	return check_opencv_version("3.")
 
 def is_cv4():
-    # if we are using OpenCV 3.X, then our cv2.__version__ will start
-    # with '4.'
-    return check_opencv_version("4.")
+	# if we are using OpenCV 3.X, then our cv2.__version__ will start
+	# with '4.'
+	return check_opencv_version("4.")
 
 
 def check_opencv_version(major, lib=None):
-    return cv.__version__.startswith(major)
+	return cv.__version__.startswith(major)
 
 
 def distance(x1, y1, x2, y2):

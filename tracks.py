@@ -286,6 +286,8 @@ class TrackManager:
 
 	def bestCar(self, cars):
 
+		# return the best two cars based on track completion
+
 		best = None
 		secondBest = None
 
@@ -327,6 +329,9 @@ class TrackManager:
 		return best, secondBest
 
 	def allDone(self, cars):
+
+		# return True if all cars died, False if any still alive
+
 		for car in cars:
 			if car.isAlive(): 
 				return False
