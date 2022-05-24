@@ -164,11 +164,11 @@ class NeuralNetwork:
 
 		for layer in self.layers:
 			wl = layer.getWeights()
-			#print 'layer len=', layer.getDimension(), "wl len=", len(wl)
+			#print('layer len=', layer.getDimension(), "wl len=", len(wl))
 			for w in wl:
 				weights.append(w) 
 
-		#print 'nn len=', len(weights)
+		#print('nn len=', len(weights))
 
 		return weights
 
