@@ -12,6 +12,9 @@ import tools
 import time
 import genetics
 
+import screeninfo
+
+
 
 
 def sleep(timer):
@@ -63,7 +66,7 @@ def zoom(img, x, y, zoomPercent = 2.0):
 	'''
 	creates an img with the zoomed portion of img around (x,y) position
 	'''
-	
+
 	ZOOM_AREA_WIDTH = 100
 	ZOOM_AREA_HEIGHT = 100
 
@@ -79,9 +82,40 @@ def zoom(img, x, y, zoomPercent = 2.0):
 
 	imgCrop = copy.copy(img[ymin:ymax, xmin:xmax])
 
-	imgCrop = cv.resize(imgCrop, (int(zoomPercent * ZOOM_AREA_HEIGHT), int(zoomPercent * ZOOM_AREA_WIDTH)), interpolation = cv.INTER_CUBIC)
+	imgCrop = cv.resize(imgCrop, (int(zoomPercent * ZOOM_AREA_WIDTH), int(zoomPercent * ZOOM_AREA_HEIGHT)), interpolation = cv.INTER_CUBIC)
 
 	return imgCrop
+
+
+def getScreenSize():
+	'''
+	get screen size from monitor placed at x=0
+	'''
+
+	for m in screeninfo.get_monitors():
+		if (m.x == 0):
+			return m.width, m.height
+
+	print("cannot capture screen size")
+	sys.exit(-1)
+
+def resizeToFit(img, newsize):
+	'''
+	adjust height to fit into screen
+	'''
+
+	SCREEN_VERTICAL_ADJ = 0.9	# window also has caption and menu
+
+	imgResized = img
+
+	aspect_ratio = imgResized.shape[1] / imgResized.shape[0]
+
+	newHeight = int(newsize[1] * SCREEN_VERTICAL_ADJ)
+	newWidth = int(newsize[1] * SCREEN_VERTICAL_ADJ * aspect_ratio)
+
+	imgResized = cv.resize(imgResized, (newWidth, newHeight), interpolation = cv.INTER_CUBIC)
+
+	return imgResized
 
 def createWindows():
 	cv.namedWindow('carSim')
@@ -94,6 +128,8 @@ def createWindows():
 
 
 def main(numgenerations = 100, genotypesPerGeneration = 10):
+
+	screenSize = getScreenSize()
 
 	createWindows()
 
@@ -113,7 +149,7 @@ def main(numgenerations = 100, genotypesPerGeneration = 10):
 
 	generation = numgenerations
 
-	while generation > 0  and not done:
+	while generation > 0 and not done:
 
 		# new generation is born
 
@@ -177,9 +213,13 @@ def main(numgenerations = 100, genotypesPerGeneration = 10):
 				cv.imshow('zoom', zoomImg)
 
 
+			trackRes = resizeToFit(trackRes, screenSize)
+
+
 			printStats(trackRes, 10, 20, trackManager, cars, best, secondBest)
 			cv.imshow('carSim', trackRes)
 
+			# all cars died?
 
 			if trackManager.allDone(cars):
 				exit = True
@@ -187,13 +227,17 @@ def main(numgenerations = 100, genotypesPerGeneration = 10):
 
 		print("finished generation %d" %(numgenerations - generation))
 
+		# show some info
+
 		imgNeuron = showNeuronWeights(best, secondBest)
 		cv.imshow('nn', imgNeuron)
 
 		generation -= 1
 
+		# let see the data for a while before repeating
+
 		if not done:
-			sleep(1)
+			sleep(2)
 
 
 def printHelp():
@@ -201,6 +245,7 @@ def printHelp():
 
 
 if __name__ == '__main__':
+
 
 	generations = 100
 	genotypesPerGeneration = 10

@@ -15,16 +15,16 @@ class Waypoint:
 	RADIUS = 25
 
 	def __init__(self, x = 0, y = 0):
-		self.x = x
-		self.y = y
+		self.x = int(x)
+		self.y = int(y)
 		self.visible = False
 
 	def getPos(self):
-		return int(self.x), int(self.y)
+		return self.x, self.y
 
 	def setPos(self, x, y):
-		self.x = x
-		self.y = y
+		self.x = int(x)
+		self.y = int(y)
 
 
 	def __str__(self):
