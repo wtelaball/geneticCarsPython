@@ -20,7 +20,7 @@ class Waypoint:
 		self.visible = False
 
 	def getPos(self):
-		return self.x, self.y
+		return int(self.x), int(self.y)
 
 	def setPos(self, x, y):
 		self.x = x
@@ -56,7 +56,7 @@ class TrackManager:
 		elif tools.is_cv3() or tools.is_cv4():
 			self.fontAA = cv.LINE_AA
 		else:
-			print 'not compatible opencv version'
+			print('not compatible opencv version')
 			sys.exit(1)
 
 	def setStart(self, sx, sy):
@@ -239,7 +239,7 @@ class TrackManager:
 			sys.exit(-1)
 
 		for c in contorno:
-			#print cv.boundingRect(c)
+			#print(cv.boundingRect(c))
 			x, y, w, h = cv.boundingRect(c)
 			self.setStart(x + w/2, y + h/2)
 
@@ -268,7 +268,7 @@ class TrackManager:
 			sys.exit(-1)
 
 		for c in contorno:
-			#print cv.boundingRect(c)
+			#print(cv.boundingRect(c))
 			x, y, w, h = cv.boundingRect(c)
 			self.addWaypoint(x + w/2, y + h/2)
 
